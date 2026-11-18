@@ -1,0 +1,385 @@
+
+--[[
+=========================================================
+             RAYFIELD UI - COMPLETE LUA CHEAT SHEET
+=========================================================
+
+A learning reference for Rayfield UI.
+
+CONTENTS:
+1. Window
+2. Tabs
+3. Sections
+4. Buttons
+5. Toggles
+6. Sliders
+7. Dropdowns
+8. Text Inputs
+9. Keybinds
+10. Color Pickers
+11. Labels
+12. Paragraphs
+13. Notifications
+14. Dividers
+15. Updating Elements
+16. Checking Values
+17. Destroying UI
+18. Basic Lua Syntax
+
+NOTE:
+This is an API reference. Examples are independent and
+some require you to create the corresponding element first.
+=========================================================
+]]
+
+--=======================================================
+-- 1. WINDOW
+--=======================================================
+
+-- Create the main window.
+-- Name: Window title.
+-- LoadingTitle: Loading screen title.
+-- LoadingSubtitle: Loading screen subtitle.
+
+local Window = Rayfield:CreateWindow({
+    Name = "My UI",
+    LoadingTitle = "My UI",
+    LoadingSubtitle = "Made by Me",
+
+    ConfigurationSaving = {
+        Enabled = false,
+        FolderName = "MyProject",
+        FileName = "Settings"
+    }
+})
+
+
+--=======================================================
+-- 2. TABS
+--=======================================================
+
+-- Tabs organize your UI into different pages.
+-- The second argument is an optional icon asset ID.
+
+local MainTab = Window:CreateTab("Main", 4483362458)
+
+local SettingsTab = Window:CreateTab("Settings", 4483362458)
+
+local InfoTab = Window:CreateTab("Information", 4483362458)
+
+
+--=======================================================
+-- 3. SECTIONS
+--=======================================================
+
+-- Sections organize elements inside tabs.
+
+local Section = MainTab:CreateSection("General")
+
+local Section2 = MainTab:CreateSection("Other")
+
+
+--=======================================================
+-- 4. BUTTONS
+--=======================================================
+
+-- A button runs its Callback when clicked.
+
+local Button = MainTab:CreateButton({
+    Name = "Click Me",
+
+    Callback = function()
+        print("Button clicked!")
+    end
+})
+
+
+--=======================================================
+-- 5. TOGGLES
+--=======================================================
+
+-- Toggles return a boolean:
+-- true = enabled
+-- false = disabled
+
+local Toggle = MainTab:CreateToggle({
+    Name = "Example Toggle",
+    CurrentValue = false,
+    Flag = "ExampleToggle",
+
+    Callback = function(Value)
+        print("Toggle:", Value)
+    end
+})
+
+
+--=======================================================
+-- 6. SLIDERS
+--=======================================================
+
+-- Range: Minimum and maximum values.
+-- Increment: Amount each movement changes.
+-- Suffix: Text displayed after the value.
+
+local Slider = MainTab:CreateSlider({
+    Name = "Volume",
+    Range = {0, 100},
+    Increment = 1,
+    Suffix = "%",
+    CurrentValue = 50,
+    Flag = "VolumeSlider",
+
+    Callback = function(Value)
+        print("Current value:", Value)
+    end
+})
+
+
+--=======================================================
+-- 7. DROPDOWNS
+--=======================================================
+
+-- Options: Available choices.
+-- CurrentOption: Initially selected option.
+-- MultipleOptions: Allows multiple selections.
+
+local Dropdown = MainTab:CreateDropdown({
+    Name = "Select Option",
+
+    Options = {
+        "Option 1",
+        "Option 2",
+        "Option 3"
+    },
+
+    CurrentOption = {"Option 1"},
+    MultipleOptions = false,
+    Flag = "MyDropdown",
+
+    Callback = function(Option)
+        print("Selected:", Option)
+    end
+})
+
+
+--=======================================================
+-- 8. TEXT INPUTS
+--=======================================================
+
+-- Allows users to type text into an input field.
+
+local Input = MainTab:CreateInput({
+    Name = "Enter Text",
+    PlaceholderText = "Type something...",
+    RemoveTextAfterFocusLost = false,
+
+    Callback = function(Text)
+        print("Input:", Text)
+    end
+})
+
+
+--=======================================================
+-- 9. KEYBINDS
+--=======================================================
+
+-- Creates a keybind that runs a callback when activated.
+
+local Keybind = MainTab:CreateKeybind({
+    Name = "Example Keybind",
+    CurrentKeybind = "Q",
+    HoldToInteract = false,
+    Flag = "ExampleKeybind",
+
+    Callback = function(Key)
+        print("Keybind activated:", Key)
+    end
+})
+
+
+--=======================================================
+-- 10. COLOR PICKERS
+--=======================================================
+
+-- Color3.fromRGB() creates a color using RGB values.
+-- Each color channel ranges from 0 to 255.
+
+local ColorPicker = MainTab:CreateColorPicker({
+    Name = "Choose Color",
+    Color = Color3.fromRGB(255, 0, 0),
+    Flag = "MyColor",
+
+    Callback = function(Color)
+        print("Selected color:", Color)
+    end
+})
+
+
+--=======================================================
+-- 11. LABELS
+--=======================================================
+
+-- Labels display simple text.
+
+local Label = MainTab:CreateLabel("Welcome to my UI!")
+
+-- Update label text:
+-- Label:Set("Updated text!")
+
+
+--=======================================================
+-- 12. PARAGRAPHS
+--=======================================================
+
+-- Paragraphs display a title and description.
+
+local Paragraph = MainTab:CreateParagraph({
+    Title = "Information",
+    Content = "This is an example paragraph."
+})
+
+-- Update paragraph:
+-- Paragraph:Set({
+--     Title = "Updated",
+--     Content = "This paragraph has been changed."
+-- })
+
+
+--=======================================================
+-- 13. NOTIFICATIONS
+--=======================================================
+
+-- Displays a notification on the screen.
+
+Rayfield:Notify({
+    Title = "Notification",
+    Content = "Hello there!",
+    Duration = 5,
+    Image = 4483362458
+})
+
+
+--=======================================================
+-- 14. DIVIDERS
+--=======================================================
+
+-- Adds a visual divider between UI elements.
+
+MainTab:CreateDivider()
+
+
+--=======================================================
+-- 15. UPDATING ELEMENTS
+--=======================================================
+
+-- Use these methods on the corresponding element
+-- handles returned when creating elements.
+
+-- Button:Set("New Button Name")
+-- Toggle:Set(true)
+-- Slider:Set(75)
+-- Dropdown:Set({"Option 2"})
+-- Keybind:Set("RightCtrl")
+-- Label:Set("New label")
+-- Section:Set("New Section Name")
+
+-- Check your Rayfield version for exact Set() signatures.
+
+
+--=======================================================
+-- 16. CHECKING VALUES
+--=======================================================
+
+-- Read the current values of UI elements.
+
+-- print(Toggle.CurrentValue)
+-- print(Slider.CurrentValue)
+-- print(Dropdown.CurrentOption)
+-- print(Keybind.CurrentKeybind)
+
+
+--=======================================================
+-- 17. DESTROYING THE UI
+--=======================================================
+
+-- Removes the entire Rayfield interface.
+
+-- Rayfield:Destroy()
+
+
+--=======================================================
+-- 18. BASIC LUA / LUAU SYNTAX
+--=======================================================
+
+-- VARIABLES
+
+local Name = "Example"
+local Number = 100
+local Enabled = true
+
+
+-- FUNCTIONS
+
+local function MyFunction()
+    print("Hello!")
+end
+
+MyFunction()
+
+
+-- CALLBACKS
+
+local function OnButtonClicked()
+    print("Button pressed!")
+end
+
+
+-- IF STATEMENTS
+
+if Enabled then
+    print("Enabled")
+else
+    print("Disabled")
+end
+
+
+-- TABLES
+
+local Options = {
+    "First",
+    "Second",
+    "Third"
+}
+
+print(Options[1])
+
+
+-- LOOPS
+
+for _, Option in ipairs(Options) do
+    print(Option)
+end
+
+
+-- WHILE LOOP
+
+local Count = 1
+
+while Count <= 5 do
+    print(Count)
+    Count += 1
+end
+
+
+-- BOOLEAN VALUES
+
+local IsEnabled = true
+
+if IsEnabled == true then
+    print("It is enabled")
+end
+
+
+--=======================================================
+-- END OF RAYFIELD LUA CHEAT SHEET
+--=======================================================
