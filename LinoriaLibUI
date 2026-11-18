@@ -1,0 +1,821 @@
+
+--[[
+=========================================================
+             LINORIA LIBRARY - LUA CHEAT SHEET
+=========================================================
+
+CONTENTS:
+
+01. Library Structure
+02. Window Creation
+03. Tabs
+04. Groupboxes
+05. Tabboxes
+06. Buttons
+07. Sub Buttons
+08. Toggles
+09. Checkboxes
+10. Sliders
+11. Dropdowns
+12. Multi-Select Dropdowns
+13. Inputs
+14. Labels
+15. Dividers
+16. Color Pickers
+17. Keybind Pickers
+18. Dependency Boxes
+19. Toggle Events
+20. Slider Events
+21. Dropdown Events
+22. Color Events
+23. Keybind Events
+24. Watermarks
+25. Unloading
+26. Lua Basics
+
+This reference uses the classic Linoria API.
+Examples assume Library, Window, and Tabs have
+already been initialized.
+=========================================================
+]]
+
+
+--=======================================================
+-- 01. LIBRARY STRUCTURE
+--=======================================================
+
+-- In a Roblox Studio project, organize your UI library
+-- as locally installed ModuleScripts.
+
+-- Typical structure:
+--
+-- ReplicatedStorage
+--     Modules
+--         LinoriaLibrary
+--         ThemeManager
+--         SaveManager
+--
+-- Keep your UI code separate from your game logic.
+
+
+--=======================================================
+-- 02. WINDOW CREATION
+--=======================================================
+
+-- Create the main Linoria window.
+
+local Window = Library:CreateWindow({
+
+    Title = "My UI",
+
+    Center = true,
+
+    AutoShow = true,
+
+    TabPadding = 8,
+
+    MenuFadeTime = 0.2
+
+})
+
+-- Title: Window title.
+-- Center: Centers the window.
+-- AutoShow: Automatically displays the window.
+-- TabPadding: Spacing between tabs.
+-- MenuFadeTime: Window animation duration.
+
+
+--=======================================================
+-- 03. TABS
+--=======================================================
+
+-- Tabs separate your interface into different pages.
+
+local Tabs = {
+
+    Main = Window:AddTab("Main"),
+
+    Settings = Window:AddTab("Settings"),
+
+    Information = Window:AddTab("Information")
+
+}
+
+-- Access a tab:
+-- Tabs.Main
+-- Tabs.Settings
+-- Tabs.Information
+
+
+--=======================================================
+-- 04. GROUPBOXES
+--=======================================================
+
+-- Groupboxes organize UI elements inside tabs.
+
+local LeftGroupBox =
+    Tabs.Main:AddLeftGroupbox("Main Options")
+
+local RightGroupBox =
+    Tabs.Main:AddRightGroupbox("Other Options")
+
+-- AddLeftGroupbox: Places a groupbox on the left.
+-- AddRightGroupbox: Places a groupbox on the right.
+
+
+--=======================================================
+-- 05. TABBOXES
+--=======================================================
+
+-- Tabboxes allow multiple smaller pages inside a group.
+
+local TabBox = Tabs.Main:AddLeftTabbox()
+
+local Tab1 = TabBox:AddTab("First Page")
+
+local Tab2 = TabBox:AddTab("Second Page")
+
+-- You can add normal UI elements to these tabs.
+
+Tab1:AddLabel("This is the first page")
+
+Tab2:AddLabel("This is the second page")
+
+
+--=======================================================
+-- 06. BUTTONS
+--=======================================================
+
+-- Creates a clickable button.
+
+local MyButton = LeftGroupBox:AddButton({
+
+    Text = "Click Me",
+
+    Func = function()
+
+        print("Button clicked!")
+
+    end
+
+})
+
+-- A button can also be created using:
+--
+-- LeftGroupBox:AddButton("Click Me", function()
+--     print("Clicked!")
+-- end)
+
+
+--=======================================================
+-- 07. SUB BUTTONS
+--=======================================================
+
+-- Creates an additional button attached to another button.
+
+local MainButton = LeftGroupBox:AddButton({
+
+    Text = "Main Button",
+
+    Func = function()
+        print("Main button clicked")
+    end
+
+})
+
+local SubButton = MainButton:AddButton({
+
+    Text = "Sub Button",
+
+    Func = function()
+        print("Sub button clicked")
+    end
+
+})
+
+
+--=======================================================
+-- 08. TOGGLES
+--=======================================================
+
+-- Toggles return true or false.
+
+LeftGroupBox:AddToggle("ExampleToggle", {
+
+    Text = "Example Toggle",
+
+    Default = false,
+
+    Tooltip = "An example toggle",
+
+})
+
+-- Access the toggle value:
+--
+-- Toggles.ExampleToggle.Value
+
+-- Listen for changes:
+
+Toggles.ExampleToggle:OnChanged(function(Value)
+
+    print("Toggle state:", Value)
+
+end)
+
+-- Change the toggle programmatically:
+
+Toggles.ExampleToggle:SetValue(true)
+
+
+--=======================================================
+-- 09. CHECKBOXES
+--=======================================================
+
+-- Linoria can display toggles as checkboxes.
+
+Library.ForceCheckbox = true
+
+-- This changes the appearance of toggles.
+-- Set it back to false for the normal toggle style.
+
+Library.ForceCheckbox = false
+
+
+--=======================================================
+-- 10. SLIDERS
+--=======================================================
+
+-- Sliders allow users to select numeric values.
+
+LeftGroupBox:AddSlider("ExampleSlider", {
+
+    Text = "Example Slider",
+
+    Default = 50,
+
+    Min = 0,
+
+    Max = 100,
+
+    Rounding = 0,
+
+    Compact = false
+
+})
+
+-- Default: Starting value.
+-- Min: Minimum value.
+-- Max: Maximum value.
+-- Rounding: Decimal precision.
+-- Compact: Hides the slider label when enabled.
+
+-- Get slider value:
+
+print(Options.ExampleSlider.Value)
+
+-- Listen for slider changes:
+
+Options.ExampleSlider:OnChanged(function(Value)
+
+    print("Slider value:", Value)
+
+end)
+
+-- Change slider value:
+
+Options.ExampleSlider:SetValue(75)
+
+
+--=======================================================
+-- 11. DROPDOWNS
+--=======================================================
+
+-- Dropdowns allow users to select from a list.
+
+LeftGroupBox:AddDropdown("ExampleDropdown", {
+
+    Text = "Choose an Option",
+
+    Values = {
+
+        "Option 1",
+        "Option 2",
+        "Option 3"
+
+    },
+
+    Default = 1,
+
+    Multi = false
+
+})
+
+-- Get selected value:
+
+print(Options.ExampleDropdown.Value)
+
+-- Listen for changes:
+
+Options.ExampleDropdown:OnChanged(function(Value)
+
+    print("Selected:", Value)
+
+end)
+
+-- Set selected value:
+
+Options.ExampleDropdown:SetValue("Option 2")
+
+
+--=======================================================
+-- 12. MULTI-SELECT DROPDOWNS
+--=======================================================
+
+-- Multi-select allows users to select multiple options.
+
+LeftGroupBox:AddDropdown("MultiDropdown", {
+
+    Text = "Select Multiple",
+
+    Values = {
+
+        "Red",
+        "Blue",
+        "Green",
+        "Purple"
+
+    },
+
+    Default = {"Red"},
+
+    Multi = true
+
+})
+
+-- Read selected values:
+
+print(Options.MultiDropdown.Value)
+
+-- Listen for changes:
+
+Options.MultiDropdown:OnChanged(function(Value)
+
+    for _, Selected in pairs(Value) do
+
+        print("Selected:", Selected)
+
+    end
+
+end)
+
+
+--=======================================================
+-- 13. INPUTS
+--=======================================================
+
+-- Inputs allow users to enter text.
+
+LeftGroupBox:AddInput("ExampleInput", {
+
+    Default = "",
+
+    Numeric = false,
+
+    Finished = false,
+
+    Text = "Enter Text",
+
+    Placeholder = "Type something here..."
+
+})
+
+-- Numeric: Restricts input to numbers.
+-- Finished: Fires changes after input is finished.
+
+-- Read input:
+
+print(Options.ExampleInput.Value)
+
+-- Listen for input changes:
+
+Options.ExampleInput:OnChanged(function(Value)
+
+    print("Input:", Value)
+
+end)
+
+
+--=======================================================
+-- 14. LABELS
+--=======================================================
+
+-- Labels display text.
+
+local MyLabel = LeftGroupBox:AddLabel("Hello World!")
+
+-- Labels can wrap longer text.
+
+LeftGroupBox:AddLabel(
+    "This is a longer description that can wrap.",
+    true
+)
+
+
+--=======================================================
+-- 15. DIVIDERS
+--=======================================================
+
+-- Dividers separate elements visually.
+
+LeftGroupBox:AddDivider()
+
+
+--=======================================================
+-- 16. COLOR PICKERS
+--=======================================================
+
+-- Color pickers allow users to choose colors.
+
+LeftGroupBox:AddLabel("Choose a Color"):AddColorPicker(
+    "ExampleColorPicker",
+    {
+
+        Default = Color3.fromRGB(255, 0, 0),
+
+        Title = "Select Color"
+
+    }
+)
+
+-- Read selected color:
+
+print(Options.ExampleColorPicker.Value)
+
+-- Listen for color changes:
+
+Options.ExampleColorPicker:OnChanged(function(Color)
+
+    print("New color:", Color)
+
+end)
+
+-- Set color:
+
+Options.ExampleColorPicker:SetValueRGB(
+    Color3.fromRGB(0, 255, 140)
+)
+
+
+--=======================================================
+-- 17. KEYBIND PICKERS
+--=======================================================
+
+-- Keybind pickers allow users to configure keyboard shortcuts.
+
+LeftGroupBox:AddLabel("Example Keybind"):AddKeyPicker(
+    "ExampleKeybind",
+    {
+
+        Default = "Q",
+
+        SyncToggleState = false,
+
+        Mode = "Toggle",
+
+        Text = "Example Shortcut",
+
+        NoUI = false
+
+    }
+)
+
+-- Available modes:
+--
+-- Always
+-- Toggle
+-- Hold
+
+-- Listen for keybind clicks:
+
+Options.ExampleKeybind:OnClick(function()
+
+    print("Keybind activated!")
+
+end)
+
+-- Check keybind state:
+
+print(Options.ExampleKeybind:GetState())
+
+-- Change keybind:
+
+Options.ExampleKeybind:SetValue({
+
+    "E",
+    "Toggle"
+
+})
+
+
+--=======================================================
+-- 18. DEPENDENCY BOXES
+--=======================================================
+
+-- Dependency boxes display elements only when
+-- another toggle has a particular value.
+
+RightGroupBox:AddToggle("ParentToggle", {
+
+    Text = "Enable Settings",
+
+    Default = false
+
+})
+
+local DependencyBox = RightGroupBox:AddDependencyBox()
+
+DependencyBox:AddSlider("DependentSlider", {
+
+    Text = "Dependent Slider",
+
+    Default = 50,
+
+    Min = 0,
+
+    Max = 100,
+
+    Rounding = 0
+
+})
+
+DependencyBox:AddDropdown("DependentDropdown", {
+
+    Text = "Dependent Dropdown",
+
+    Values = {
+
+        "First",
+        "Second",
+        "Third"
+
+    },
+
+    Default = 1
+
+})
+
+-- Set the dependency:
+
+DependencyBox:SetupDependencies({
+
+    {Toggles.ParentToggle, true}
+
+})
+
+-- The dependency box is displayed when
+-- ParentToggle is true.
+
+
+--=======================================================
+-- 19. TOGGLE EVENTS
+--=======================================================
+
+-- Listen for toggle changes.
+
+Toggles.ParentToggle:OnChanged(function(Value)
+
+    if Value then
+
+        print("Settings enabled")
+
+    else
+
+        print("Settings disabled")
+
+    end
+
+end)
+
+
+--=======================================================
+-- 20. SLIDER EVENTS
+--=======================================================
+
+Options.ExampleSlider:OnChanged(function(Value)
+
+    if Value >= 50 then
+
+        print("Value is 50 or higher")
+
+    else
+
+        print("Value is below 50")
+
+    end
+
+end)
+
+
+--=======================================================
+-- 21. DROPDOWN EVENTS
+--=======================================================
+
+Options.ExampleDropdown:OnChanged(function(Value)
+
+    if Value == "Option 1" then
+
+        print("First option selected")
+
+    elseif Value == "Option 2" then
+
+        print("Second option selected")
+
+    elseif Value == "Option 3" then
+
+        print("Third option selected")
+
+    end
+
+end)
+
+
+--=======================================================
+-- 22. COLOR EVENTS
+--=======================================================
+
+Options.ExampleColorPicker:OnChanged(function()
+
+    local Color = Options.ExampleColorPicker.Value
+
+    print("RGB color:", Color)
+
+end)
+
+
+--=======================================================
+-- 23. KEYBIND EVENTS
+--=======================================================
+
+Options.ExampleKeybind:OnClick(function()
+
+    print("Shortcut pressed")
+
+end)
+
+-- Get current keybind state:
+
+local IsPressed = Options.ExampleKeybind:GetState()
+
+print("Keybind active:", IsPressed)
+
+
+--=======================================================
+-- 24. WATERMARKS
+--=======================================================
+
+-- Show watermark:
+
+Library:SetWatermarkVisibility(true)
+
+-- Set watermark text:
+
+Library:SetWatermark("My UI | Example Project")
+
+-- Hide watermark:
+
+Library:SetWatermarkVisibility(false)
+
+
+--=======================================================
+-- 25. UNLOADING
+--=======================================================
+
+-- Run code when the library unloads.
+
+Library:OnUnload(function()
+
+    print("UI unloaded!")
+
+end)
+
+-- The library's unload process can be triggered
+-- through its configured UI controls.
+
+
+--=======================================================
+-- 26. BASIC LUA / LUAU SYNTAX
+--=======================================================
+
+-- VARIABLES
+
+local Name = "Example"
+
+local Number = 100
+
+local Enabled = true
+
+
+-- FUNCTIONS
+
+local function MyFunction()
+
+    print("Hello World!")
+
+end
+
+MyFunction()
+
+
+-- IF STATEMENTS
+
+if Enabled then
+
+    print("Enabled")
+
+else
+
+    print("Disabled")
+
+end
+
+
+-- TABLES
+
+local Colors = {
+
+    "Red",
+    "Blue",
+    "Green"
+
+}
+
+print(Colors[1])
+
+
+-- LOOPS
+
+for _, Color in ipairs(Colors) do
+
+    print(Color)
+
+end
+
+
+-- WHILE LOOPS
+
+local Count = 1
+
+while Count <= 5 do
+
+    print(Count)
+
+    Count += 1
+
+end
+
+
+-- BOOLEAN VALUES
+
+local IsVisible = true
+
+local IsDisabled = false
+
+
+-- COMPARISON OPERATORS
+--
+-- ==  Equal
+-- ~=  Not equal
+-- >   Greater than
+-- <   Less than
+-- >=  Greater than or equal
+-- <=  Less than or equal
+
+
+--=======================================================
+-- QUICK REFERENCE
+--=======================================================
+
+-- Library:CreateWindow()
+-- Window:AddTab()
+-- Tab:AddLeftGroupbox()
+-- Tab:AddRightGroupbox()
+-- Tab:AddLeftTabbox()
+-- Tab:AddRightTabbox()
+-- Groupbox:AddButton()
+-- Groupbox:AddToggle()
+-- Groupbox:AddSlider()
+-- Groupbox:AddDropdown()
+-- Groupbox:AddInput()
+-- Groupbox:AddLabel()
+-- Groupbox:AddDivider()
+-- Label:AddColorPicker()
+-- Label:AddKeyPicker()
+-- Groupbox:AddDependencyBox()
+-- DependencyBox:SetupDependencies()
+-- Library:SetWatermark()
+-- Library:SetWatermarkVisibility()
+-- Library:OnUnload()
+
+--=======================================================
+-- END OF LINORIA LUA CHEAT SHEET
+--=======================================================
